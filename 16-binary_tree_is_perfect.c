@@ -11,7 +11,7 @@ size_t bt_height(const binary_tree_t *tree);
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
-	if (!tree)
+	if (!tree || (!tree->left && !tree->right))
 		return (0);
 
 	return (bt_is_full(tree) &&
