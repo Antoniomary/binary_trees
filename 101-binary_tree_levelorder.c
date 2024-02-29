@@ -10,17 +10,16 @@ void bt_levelorder(const binary_tree_t *tree, void (*func)(int));
  */
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 {
-	if (tree && func)
-	{
-		func(tree->n);
-		bt_levelorder(tree, func);
-	}
+	if (!tree || !func)
+		return;
+
+	func(tree->n);
+	bt_levelorder(tree, func);
 }
 
 /**
  * bt_levelorder - a recursive function that traverses a binary tree
  * in level order
- *
  * @tree: a pointer to the root node of the tree to traverse.
  * @func: a pointer to a function to call for each node.
  */
