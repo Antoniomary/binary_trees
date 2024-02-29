@@ -1,7 +1,7 @@
 #include "binary_trees.h"
 
-int bt_is_full(const binary_tree_t *tree);
 size_t bt_height(const binary_tree_t *tree);
+size_t bt_size(const binary_tree_t *tree);
 
 /**
  * binary_tree_is_perfect - a function that checks if a binary tree is perfect.
@@ -11,25 +11,20 @@ size_t bt_height(const binary_tree_t *tree);
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
+	int height = 0, size = 0, max_node = 1;
+
 	if (!tree)
 		return (0);
 
-	return (bt_is_full(tree) &&
-			(bt_height(tree->left) == bt_height(tree->right)));
-}
+	height = bt_height(tree);
+	size = bt_size(tree);
 
-/**
- * bt_is_full - a recursive function that checks if a binary tree is full.
- * @tree: a pointer to the root node of the tree to check.
- *
- * Return: 0 if not full or 1 if full.
- */
-int bt_is_full(const binary_tree_t *tree)
-{
-	if (!tree)
-		return (0);
+	height += 1;
+	while (height--)
+		max_node *= 2;
+	max_node -= 1;
 
-	return (!(bt_is_full(tree->left) ^ bt_is_full(tree->right)));
+	return (size == max_node);
 }
 
 /**
@@ -49,4 +44,18 @@ size_t bt_height(const binary_tree_t *tree)
 	right = bt_height(tree->right);
 
 	return ((left >= right ? left : right) + 1);
+}
+
+/**
+ * bt_size - a recursive function that counts the nodes in a binary tree.
+ * @tree: pointer to the root node of the tree to count the number of nodes.
+ *
+ * Return: an int >= 1
+ */
+size_t bt_size(const binary_tree_t *tree)
+{
+	if (!tree)
+		return (0);
+
+	return (bt_size(tree->left) + bt_size(tree->right) + 1);
 }
