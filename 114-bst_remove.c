@@ -1,7 +1,7 @@
 #include "binary_trees.h"
 
 bst_t *bst_search(const bst_t *tree, int value);
-bst_t *successor(bst_t *tree, bst_t *min);
+bst_t *successor(bst_t *tree);
 void remove_leaf(bst_t **root, bst_t *leaf);
 void remove_node_with_a_child(bst_t **root, bst_t *node);
 
@@ -24,29 +24,9 @@ bst_t *bst_remove(bst_t *root, int value)
 			remove_leaf(&root, node);
 		else if (node->left && node->right) /* has two children */
 		{
-			replace = successor(node->right, node->right);
-			if (replace)
-			{
-				if (replace->parent->left == replace)
-					replace->parent->left = replace->left;
-				else
-					replace->parent->right = replace->right;
-
-				replace->parent = node->parent;
-				replace->left = node->left;
-				replace->right = node->right;
-
-				if (!node->parent) /* node to remove is root node */
-					root = replace;
-				else
-				{
-					if (node->parent->left == node)
-						node->parent->left = replace;
-					else
-						node->parent->right = replace;
-				}
-				free(node);
-			}
+			replace = successor(node->right);
+			node->n = replace->n;
+			remove_leaf(&root, replace);
 		}
 		else /* has one child */
 			remove_node_with_a_child(&root, node);
@@ -84,19 +64,18 @@ bst_t *bst_search(const bst_t *tree, int value)
 /**
  * successor - a recursive function that finds the min value node in a tree.
  * @tree: the tree to check.
- * @min: the variable to hold the min.
  *
  * Return: the node with the min value or NULL if tree is NULL.
  */
-bst_t *successor(bst_t *tree, bst_t *min)
+bst_t *successor(bst_t *tree)
 {
 	if (!tree)
-		return (min);
+		return (NULL);
 
-	if (min->n > tree->n)
-		min = tree;
+	if (!tree->left)
+		return (tree);
 
-	return (successor(tree->left, min));
+	return (successor(tree->left));
 }
 
 /**
