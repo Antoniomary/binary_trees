@@ -26,7 +26,7 @@ bst_t *bst_remove(bst_t *root, int value)
 		{
 			replace = successor(node->right);
 			node->n = replace->n;
-			remove_leaf(&root, replace);
+			bst_remove(replace, replace->n);
 		}
 		else /* has one child */
 			remove_node_with_a_child(&root, node);
