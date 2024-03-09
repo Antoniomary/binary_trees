@@ -81,16 +81,25 @@ void insert_heap(heap_t *tree, heap_t *parent, heap_t **node,
 void heapify(heap_t *node)
 {
 	int temp;
+	heap_t *max = node;
 
 	if (!node || !node->parent)
 		return;
 
-	if (node->parent->n < node->n)
+	if (node->parent->n < max->n)
 	{
 		temp = node->parent->n;
-		node->parent->n = node->n;
-		node->n = temp;
+		node->parent->n = max->n;
+		max->n = temp;
 	}
 
-	heapify(node->parent);
+	if (node->parent->right && node->parent->right->n < max->n)
+	{
+		temp = node->parent->right->n;
+		node->parent->right->n = max->n;
+		max->n = temp;
+	}
+
+	if (max != node)
+		heapify(node->parent);
 }
