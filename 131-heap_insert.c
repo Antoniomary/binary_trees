@@ -3,7 +3,7 @@
 size_t bt_size(heap_t *tree);
 void insert_heap(heap_t *tree, heap_t *parent, heap_t **node,
 		size_t i, size_t size, int n);
-void heapify(heap_t *node);
+void heapify(heap_t **node);
 
 /**
  * heap_insert - a function that inserts a value in Max Binary Heap.
@@ -25,7 +25,7 @@ heap_t *heap_insert(heap_t **root, int value)
 
 	size = bt_size(*root);
 	insert_heap(*root, *root, &node, 0, size, value);
-
+	heapify(&node);
 	return (node);
 }
 
@@ -44,10 +44,10 @@ size_t bt_size(heap_t *tree)
 }
 
 /**
- * insert_heap - a recursive function that finds the right place and inserts
- * a node.
+ * insert_heap - a recursive function that finds the right place and
+ * inserts a node.
  * @tree: a pointer to the root.
- * @parent: the parent node to give to inserted node.
+ * @parent: the parent node to use for the new node.
  * @node: a double pointer to the new node.
  * @i: the index of the node in the tree.
  * @size: the number of nodes in the tree.
@@ -63,7 +63,6 @@ void insert_heap(heap_t *tree, heap_t *parent, heap_t **node,
 			parent->left = *node;
 		else
 			parent->right = *node;
-		heapify(*node);
 		return;
 	}
 
@@ -76,30 +75,24 @@ void insert_heap(heap_t *tree, heap_t *parent, heap_t **node,
 
 /**
  * heapify - a function that recursively turns a tree to a max heap.
- * @node: the node to check it value.
+ * @node: the node to check its value.
  */
-void heapify(heap_t *node)
+void heapify(heap_t **node)
 {
 	int temp;
-	heap_t *max = node;
+	heap_t *max = *node;
 
-	if (!node || !node->parent)
+	if (!*node || !(*node)->parent)
 		return;
 
-	if (node->parent->n < max->n)
+	if (max->parent->n < max->n)
 	{
-		temp = node->parent->n;
-		node->parent->n = max->n;
+		temp = max->parent->n;
+		max->parent->n = max->n;
 		max->n = temp;
+		*node = (*node)->parent;
 	}
 
-	if (node->parent->right && node->parent->right->n < max->n)
-	{
-		temp = node->parent->right->n;
-		node->parent->right->n = max->n;
-		max->n = temp;
-	}
-
-	if (max != node)
-		heapify(node->parent);
+	if (*node != max)
+		heapify(node);
 }
